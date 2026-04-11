@@ -223,7 +223,6 @@ erDiagram
     VISITORS ||--o{ FORM_SUBMISSIONS : ""
     FORMS ||--o{ DISPLAY_RULES : ""
     FORMS ||--o{ FORM_SUBMISSIONS : ""
-    LEADS ||--o{ FORM_SUBMISSIONS : ""
 
     USERS {
       bigint id PK
@@ -408,12 +407,12 @@ Rails 8 標準の `bin/rails generate authentication` で生成される。
 
 | エンティティ | 説明 |
 |---|---|
-| **Visitor** (匿名訪問者) | cookie ベースの識別子で同一ブラウザの継続性を保証する。「匿名」と「リード化済」の状態を持つ。集約ルート |
-| **Event** (行動イベント) | 訪問者がある時点で行った行動。種類・発生時刻・対象パスを持つ。Visitor集約の子 |
+| **Visitor** (匿名訪問者) | cookie ベースの識別子で同一ブラウザの継続性を保証する。**行動履歴 (Event / FormSubmission) の主体**。「匿名」と「顕在化済」の状態を持つ。集約ルート |
+| **Event** (行動イベント) | 訪問者がある時点で行った行動。種類・発生時刻・対象パスを持つ。Visitor 集約の子 |
 | **Form** | 訪問者から情報を受け取るための定義。集約ルート |
-| **DisplayRule** | どの条件を満たした訪問者にどのフォームを表示するか。Form集約の子 |
-| **FormSubmission** | あるフォームに対する1回の送信内容 |
-| **Lead** | 連絡先が判明した訪問者。Visitor と 1対1。集約ルート |
+| **DisplayRule** | どの条件を満たした訪問者にどのフォームを表示するか。Form 集約の子 |
+| **FormSubmission** | あるフォームに対する1回の送信内容。**Visitor の行動履歴の1種**として Visitor 配下に置く |
+| **Lead** | 匿名訪問者が**顕在化した結果**を表す。連絡先(メール / 氏名)を保持し、Visitor と 1対1 で紐づく独立集約。履歴そのものは持たない |
 | **Article** | サンプル記事。閲覧されることで Event を発生させる対象 |
 | **User** (管理者) | 管理画面を利用する管理者 |
 
@@ -432,19 +431,22 @@ Rails 8 標準の `bin/rails generate authentication` で生成される。
 
 | 集約ルート | 子 | 関心ごと |
 |---|---|---|
-| **Visitor** | Event | 訪問者の行動の継続観察 |
+| **Visitor** | Event, FormSubmission | 訪問者の行動の継続観察。**ページ閲覧もフォーム送信もすべて「訪問者が起こした履歴」として Visitor 配下で扱う** |
 | **Form** | DisplayRule | フォームと「いつ表示するか」は一体運用 |
-| **Lead** | FormSubmission | リード化後の追加情報・更新 |
+| **Lead** | (なし) | 顕在化した結果を表す独立集約。履歴の主体は Visitor 側に残す |
 | **Article** | (なし) | 単独のコンテンツ単位 |
 
 ### 5.5 主要な関連
 
-- Visitor `1` ─ `0..1` Lead (リード化時に紐付く)
-- Visitor `1` ─ `*` Event
-- Form `1` ─ `*` DisplayRule
-- Form `1` ─ `*` FormSubmission
-- Visitor `1` ─ `*` FormSubmission
-- Lead `1` ─ `*` FormSubmission
+- Visitor `1` ─ `0..1` Lead (顕在化時に紐付く / 連絡先情報だけを持つ)
+- Visitor `1` ─ `*` Event (ページ閲覧などの行動履歴)
+- Visitor `1` ─ `*` FormSubmission (フォーム送信の履歴)
+- Form `1` ─ `*` DisplayRule (いつ表示するか)
+- Form `1` ─ `*` FormSubmission (どのフォームから送られたか)
+
+> Lead と FormSubmission の間には**直接の関連を張らない**。
+> 「あるリードの送信履歴」を見たい場合は `lead.visitor.form_submissions` のように Visitor 経由で辿る。
+> これにより「Visitor と Lead で履歴が分裂する」問題を避ける。
 
 ### 5.6 MVPであえてまとめた / 残した判断
 
@@ -454,9 +456,10 @@ Rails 8 標準の `bin/rails generate authentication` で生成される。
 - **Form に FormField を持たせず、項目固定**
   - 本来: フォーム項目は動的に設計されるべき
   - MVP: 「リード化」というMAの本質は「項目の動的設計」抜きでも語れる
-- **Visitor と Lead はあえて分けて残した**
+- **Visitor と Lead はあえて分けて残した(ただし履歴は Visitor 側に寄せる)**
   - 本来: 「人」という単一エンティティの状態違いとも解釈できる
   - MVP: 「匿名→顕在化」というMAの中心概念を分かりやすく示すため別エンティティで残す
+  - **行動履歴 (Event / FormSubmission) は Lead ではなく Visitor 配下に一元化する**。Lead は「顕在化した結果」としての連絡先情報のみを持ち、履歴を直接抱えない。リードの送信履歴を見たければ `lead.visitor.form_submissions` で辿る
 - **DisplayRule の条件を単一型に限定**
   - 本来: AND/OR、属性条件、時間帯条件など複合化される
   - MVP: ルールエンジンを避け、1種類だけで思想を表現する
@@ -467,6 +470,40 @@ Rails 8 標準の `bin/rails generate authentication` で生成される。
 ---
 
 ## 6. classDiagram
+
+レビュー時に主要構造が一目で分かるように、**主要エンティティだけの概観図**と **値オブジェクト・サービスまで含む詳細図**の2段階で示す。
+
+### 6.1 概観: 主要エンティティのみ
+
+まず「何と何がどう繋がっているか」だけを確認するための図。属性・メソッド・値オブジェクトは意図的に省略する。
+
+```mermaid
+classDiagram
+    class Visitor
+    class Event
+    class FormSubmission
+    class Lead
+    class Form
+    class DisplayRule
+    class Article
+
+    Visitor "1" o-- "*" Event : owns (履歴)
+    Visitor "1" o-- "*" FormSubmission : owns (履歴)
+    Visitor "1" -- "0..1" Lead : converts to
+    Form "1" o-- "*" DisplayRule : displayed by
+    Form "1" -- "*" FormSubmission : receives
+```
+
+**この図で表現している要点:**
+
+- 行動履歴 (`Event` / `FormSubmission`) はすべて Visitor の集約配下にある
+- Lead は Visitor と 1対1 で紐づく独立集約で、子を持たない(連絡先情報のみ)
+- Form は `DisplayRule` を子に持ち、`FormSubmission` を受け取るが、履歴の主体にはならない
+- Lead と FormSubmission の間には**直接の関連は張らない**
+
+### 6.2 詳細: 属性・値オブジェクト・サービスを含む図
+
+実装時に参照するための詳細図。属性・メソッド・値オブジェクト候補・`ScoreCalculator` を含む。
 
 ```mermaid
 classDiagram
@@ -484,6 +521,16 @@ classDiagram
       +PagePath path
       +DateTime occurredAt
     }
+    class FormSubmission {
+      +EmailAddress email
+      +String name
+      +DateTime submittedAt
+    }
+    class Lead {
+      +EmailAddress email
+      +String name
+      +DateTime firstConvertedAt
+    }
     class Form {
       +String name
       +String description
@@ -495,16 +542,6 @@ classDiagram
       +Integer threshold
       +Boolean enabled
       +matches(Visitor) Boolean
-    }
-    class FormSubmission {
-      +EmailAddress email
-      +String name
-      +DateTime submittedAt
-    }
-    class Lead {
-      +EmailAddress email
-      +String name
-      +DateTime firstConvertedAt
     }
     class Article {
       +String title
@@ -532,11 +569,10 @@ classDiagram
     }
 
     Visitor "1" o-- "*" Event : owns
+    Visitor "1" o-- "*" FormSubmission : owns
     Visitor "1" -- "0..1" Lead : converts to
-    Visitor "1" -- "*" FormSubmission : submits
     Form "1" o-- "*" DisplayRule : displayed by
     Form "1" -- "*" FormSubmission : receives
-    Lead "1" -- "*" FormSubmission : owns
     ScoreCalculator ..> Visitor : reads
     Visitor ..> VisitorToken
     Visitor ..> Score
@@ -761,32 +797,98 @@ end
 
 ### 8.1 PublicController (公開側ベース)
 
-| 責務 | 内容 |
-|---|---|
-| `before_action :track_visitor` | 訪問者識別 + page_view 記録 + スコア再計算 |
-| `@current_visitor` | ビューと派生コントローラから参照可能 |
+公開ページ共通の前処理を担う。責務を **4段階の private メソッド** に分け、`track_visitor` は順序を示すだけにする。service object には切り出さず、コントローラ内の private メソッドのまま保つ(この規模では過剰)。
+
+#### 8.1.1 責務の分解
+
+| private メソッド | 責務 | 対象 |
+|---|---|---|
+| `identify_visitor` | cookie から `visitor_token` を読み、無ければ発行して Visitor を `find_or_create_by` | 公開ページ全体 |
+| `touch_last_visited_at` | `last_visited_at` を現在時刻に更新 | 公開ページ全体 |
+| `record_page_view_if_trackable` | **計測対象のページに限り** `page_view` イベントを作成 | trackable な公開ページのみ |
+| `recalculate_score_if_event_recorded` | `page_view` を記録した場合のみスコア再計算 | trackable な公開ページのみ |
+
+「常に実施する前処理」と「計測対象でのみ実施する前処理」をメソッド名で区別するのがポイント。
+
+#### 8.1.2 trackable path の考え方
+
+`page_view` の記録対象にするのは**関心度を測るのに意味がある公開ページ**だけにする。送信完了画面や認証画面はノイズなので除外する。
+
+| パス | 計測対象 | 理由 |
+|---|---|---|
+| `/` | ○ | LP。訪問のエントリーポイント |
+| `/articles` | ○ | 記事一覧。関心ジャンルの入口 |
+| `/articles/:id` | ○ | 記事詳細。関心度を測る主要シグナル |
+| `/forms/:id/thanks` | × | 送信完了画面。送信後に自動遷移するだけでスコアに含めるとノイズ |
+| `/session/new` `/session` 等 | × | 認証画面。訪問者の関心行動ではない |
+| `/admin/*` | × | 管理画面。そもそも `PublicController` を継承していない |
+
+実装では **トラッキング対象の controller 名をホワイトリストで宣言** する。これにより「どの controller が trackable か」が1箇所で完結し、読み手が一目で把握できる。
+
+- `PublicController` に属さないもの(`Admin::*`, `SessionsController` 等)は `before_action` が走らないので自動的に非対象
+- `PublicController` に属するが計測対象でないもの(`FormsController#thanks`)は `TRACKABLE_CONTROLLERS` に含めないことで除外
+
+#### 8.1.3 実装イメージ
 
 ```ruby
 class PublicController < ApplicationController
+  # page_view を記録するコントローラのホワイトリスト。
+  # 新しい計測対象ページを追加する時はここに追記する。
+  TRACKABLE_CONTROLLERS = %w[home articles].freeze
+
   before_action :track_visitor
 
   private
 
+  # 公開ページ共通の前処理。順序だけを示す薄いメソッドにする。
   def track_visitor
+    identify_visitor
+    touch_last_visited_at
+    record_page_view_if_trackable
+    recalculate_score_if_event_recorded
+  end
+
+  # cookie から訪問者を引き当て、無ければ発行する
+  def identify_visitor
     token = cookies.permanent.signed[:visitor_token] ||= SecureRandom.uuid
     @current_visitor = Visitor.find_or_create_by(visitor_token: token) do |v|
       v.first_visited_at = Time.current
     end
+  end
+
+  # 最終訪問日時を更新
+  def touch_last_visited_at
     @current_visitor.update(last_visited_at: Time.current)
-    @current_visitor.events.create!(
+  end
+
+  # 計測対象ページの場合のみ page_view を記録
+  def record_page_view_if_trackable
+    return unless trackable_request?
+
+    @recorded_event = @current_visitor.events.create!(
       event_type:  "page_view",
       path:        request.path,
       occurred_at: Time.current
     )
+  end
+
+  # イベントを記録した時だけスコアを再計算
+  def recalculate_score_if_event_recorded
+    return unless @recorded_event
+
     @current_visitor.recalculate_score!
+  end
+
+  def trackable_request?
+    TRACKABLE_CONTROLLERS.include?(controller_name)
   end
 end
 ```
+
+| 公開側で利用できるもの | 内容 |
+|---|---|
+| `@current_visitor` | 派生コントローラおよびビューから参照可能 |
+| `@recorded_event` | 当該リクエストで記録された `page_view` Event(trackable 以外では nil) |
 
 ### 8.2 HomeController / ArticlesController
 
@@ -796,11 +898,19 @@ end
 
 ### 8.3 FormSubmissionsController
 
-| アクション | 責務 |
-|---|---|
-| `create` | 1) `FormSubmission` 作成 → 2) `Lead` を `find_or_create_by` → 3) `Event(form_submit)` 記録 → 4) スコア再計算 → 5) `/forms/:id/thanks` にリダイレクト |
+`create` の責務を、ドメイン上の意味で整理する。
 
-> リード化前後で同じ Visitor に紐づくため、行動履歴は分断されない。
+| ステップ | 処理 | ドメイン上の意味 |
+|---|---|---|
+| 1 | `FormSubmission` を作成 (visitor / form / email / name / submitted_at) | **Visitor の行動履歴**にフォーム送信を1件追加 |
+| 2 | 当該 Visitor にまだ Lead が無ければ `Lead.find_or_create_by(visitor:)` | 匿名訪問者を**顕在化**させる(1Visitor=1Lead) |
+| 3 | `Event(event_type: "form_submit")` を記録 | 行動タイムラインに form_submit を追加(スコア計算の材料) |
+| 4 | `@current_visitor.recalculate_score!` | スコアを再計算 |
+| 5 | `/forms/:id/thanks` にリダイレクト | 完了画面(※`page_view` 計測対象外) |
+
+> - 履歴の主体は常に Visitor 側。**Lead 配下に FormSubmission を置かない**
+> - 同じ訪問者が何度送信しても Lead は増えず、FormSubmission と Event のみ増える
+> - リード化前の閲覧履歴も同じ Visitor に紐づいたままなので、リード詳細画面では `lead.visitor` 経由で全履歴を一覧できる
 
 ### 8.4 Admin::ApplicationController
 
@@ -936,11 +1046,34 @@ sequenceDiagram
 |---|---|
 | `ScoreCalculator` (PORO) | スコア計算の唯一の場所。加算ルールの定義と適用 |
 | `Visitor#recalculate_score!` | ScoreCalculator を呼び出して結果を `score` カラムに保存する指示 |
-| `PublicController#track_visitor` | ページ閲覧記録後にスコア再計算を発火 |
+| `PublicController` 派生 | 計測対象ページで `page_view` を記録した直後にスコア再計算を発火(§8.1 参照) |
 | `FormSubmissionsController#create` | フォーム送信後にスコア再計算を発火 |
-| Admin::LeadsController | スコア降順で表示するだけ。計算には関与しない |
+| `Admin::LeadsController` | スコア降順で表示するだけ。計算には関与しない |
 
-### 10.1 拡張のしやすさ
+### 10.1 MVP では「全履歴再計算」を採用する(意図の明記)
+
+MVPでは、イベントが1件追加されるたびに Visitor に紐づく**全 Event を合算してスコアを再計算する**。差分加算(例: `score += 1` で済ませる)ではなく、毎回すべての履歴から計算し直す単純方式を選んでいる。
+
+| 観点 | MVPの判断 |
+|---|---|
+| 分かりやすさ | 「スコアの真実は常に `events` テーブル」という1点だけ覚えればよい |
+| 一貫性 | 過去イベントが後から追加・修正されても、次の再計算で正しい値に戻る |
+| パフォーマンス | 学習用・1人利用の規模では問題にならない |
+| 拡張性 | `ScoreCalculator` に閉じているので、後から差分加算に置き換えても外部に影響しない |
+
+**これはあえて最適化しない判断である** ことを明記しておく。パフォーマンス最適化は非MVPスコープ。
+
+### 10.2 将来の見直し余地
+
+本番運用を想定する段階では、以下のいずれかへ移行できる余地を残している(いずれも MVPの対象外):
+
+- **差分加算方式**: Event 作成時に `score += point_for(event)` だけ行う。全履歴の読み込みが不要
+- **集計キャッシュテーブル**: 日次・時間別の集計テーブルを設け、そこから合算する
+- **非同期化**: `recalculate_score!` を ActiveJob に載せ、リクエストから切り離す
+
+いずれも **`ScoreCalculator` の内部実装を差し替えるだけ** で済むように、`Visitor#recalculate_score!` とコントローラは常に `ScoreCalculator.new(visitor).call` を呼ぶだけの薄い層にしておく。
+
+### 10.3 拡張のしやすさ(加算ルール側)
 
 将来「特定ページ閲覧 +Npt」を入れたい場合の影響範囲は **`ScoreCalculator` 内の `PATH_BONUS` 定数のみ**。Visitor やコントローラには触れる必要がない。
 
