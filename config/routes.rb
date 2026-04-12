@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
 
+  # 公開側
+  root "home#show"
+  resources :articles, only: %i[index show]
+
   # 管理側(認証必須)。中身は後続チケットで追加する。
   namespace :admin do
     root "dashboard#show"

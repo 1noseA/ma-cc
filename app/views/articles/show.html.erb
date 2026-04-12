@@ -1,0 +1,10 @@
+<% content_for :title, @article.title %>
+
+<article class="w-full">
+  <h1 class="text-3xl font-bold mb-4"><%= @article.title %></h1>
+  <div class="prose text-gray-800 whitespace-pre-line"><%= @article.body %></div>
+
+  <div class="mt-8">
+    <%= link_to "← 記事一覧に戻る", articles_path, class: "text-blue-600 hover:underline" %>
+  </div>
+</article>
