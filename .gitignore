@@ -1,0 +1,61 @@
+# Environment variables
+.env
+.env.*
+!.env.sample
+
+# Bundler
+/.bundle
+/vendor/bundle
+
+# Database
+/db/*.sqlite3
+/db/*.sqlite3-*
+
+# Logs and tempfiles
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+!/tmp/pids/
+!/tmp/pids/.keep
+!/tmp/storage/
+!/tmp/storage/.keep
+
+# Active Storage
+/storage/*
+!/storage/.keep
+
+# Credentials
+/config/master.key
+/config/credentials/*.key
+
+# Node
+/node_modules
+yarn-error.log
+.yarn-integrity
+
+# Asset build outputs
+/public/assets
+/public/packs
+/public/packs-test
+/app/assets/builds/*
+!/app/assets/builds/.keep
+
+# Test / coverage
+/coverage
+/spec/examples.txt
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.swp
+*.swo
+*~
+
+# Rails
+/spring/*.pid
+/tmp/bootsnap*
+.byebug_history
