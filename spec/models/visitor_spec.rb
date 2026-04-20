@@ -7,5 +7,12 @@ RSpec.describe Visitor, type: :model do
       expect(visitor).not_to be_valid
       expect(visitor.errors[:visitor_token]).to be_present
     end
+
+    it "visitor_token が重複している場合は無効" do
+      create(:visitor, visitor_token: "dup_token")
+      visitor = Visitor.new(visitor_token: "dup_token")
+      expect(visitor).not_to be_valid
+      expect(visitor.errors[:visitor_token]).to be_present
+    end
   end
 end
