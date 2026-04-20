@@ -14,5 +14,17 @@ RSpec.describe Visitor, type: :model do
       expect(visitor).not_to be_valid
       expect(visitor.errors[:visitor_token]).to be_present
     end
+
+    it "first_visited_at が無い場合は無効" do
+      visitor = build(:visitor, first_visited_at: nil)
+      expect(visitor).not_to be_valid
+      expect(visitor.errors[:first_visited_at]).to be_present
+    end
+
+    it "last_visited_at が無い場合は無効" do
+      visitor = build(:visitor, last_visited_at: nil)
+      expect(visitor).not_to be_valid
+      expect(visitor.errors[:last_visited_at]).to be_present
+    end
   end
 end
