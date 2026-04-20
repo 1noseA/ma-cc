@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_12_034051) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_20_143708) do
   create_table "articles", force: :cascade do |t|
     t.text "body", null: false
     t.datetime "created_at", null: false
@@ -34,6 +34,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_034051) do
     t.string "password_digest", null: false
     t.datetime "updated_at", null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
+  end
+
+  create_table "visitors", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "first_visited_at"
+    t.datetime "last_visited_at"
+    t.integer "score"
+    t.datetime "updated_at", null: false
+    t.string "visitor_token"
+    t.index ["score"], name: "index_visitors_on_score"
+    t.index ["visitor_token"], name: "index_visitors_on_visitor_token", unique: true
   end
 
   add_foreign_key "sessions", "users"

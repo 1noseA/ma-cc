@@ -1,0 +1,11 @@
+require "rails_helper"
+
+RSpec.describe Visitor, type: :model do
+  describe "バリデーション" do
+    it "visitor_token が無い場合は無効" do
+      visitor = Visitor.new(visitor_token: nil)
+      expect(visitor).not_to be_valid
+      expect(visitor.errors[:visitor_token]).to be_present
+    end
+  end
+end
