@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_20_143708) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_20_150055) do
   create_table "articles", force: :cascade do |t|
     t.text "body", null: false
     t.datetime "created_at", null: false
@@ -40,7 +40,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_20_143708) do
     t.datetime "created_at", null: false
     t.datetime "first_visited_at"
     t.datetime "last_visited_at"
-    t.integer "score"
+    t.integer "score", default: 0
     t.datetime "updated_at", null: false
     t.string "visitor_token"
     t.index ["score"], name: "index_visitors_on_score"

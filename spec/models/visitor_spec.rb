@@ -1,6 +1,13 @@
 require "rails_helper"
 
 RSpec.describe Visitor, type: :model do
+  describe "デフォルト値" do
+    it "score のデフォルトは 0" do
+      visitor = Visitor.new
+      expect(visitor.score).to eq(0)
+    end
+  end
+
   describe "バリデーション" do
     it "visitor_token が無い場合は無効" do
       visitor = Visitor.new(visitor_token: nil)
