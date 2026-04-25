@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   # 管理側(認証必須)。中身は後続チケットで追加する。
   namespace :admin do
     root "dashboard#show"
+    resources :visitors, only: %i[index show]
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
