@@ -1,1 +1,29 @@
 <h1 class="text-2xl font-bold mb-4">訪問者詳細</h1>
+
+<div class="mb-6">
+  <p><strong>トークン:</strong> <%= @visitor.visitor_token %></p>
+  <p><strong>初回訪問:</strong> <%= @visitor.first_visited_at.strftime("%Y-%m-%d %H:%M") %></p>
+  <p><strong>最終訪問:</strong> <%= @visitor.last_visited_at.strftime("%Y-%m-%d %H:%M") %></p>
+  <p><strong>PV数:</strong> <%= @visitor.page_view_count %></p>
+</div>
+
+<h2 class="text-xl font-bold mb-2">行動履歴</h2>
+
+<table class="w-full border-collapse">
+  <thead>
+    <tr class="border-b">
+      <th class="text-left p-2">日時</th>
+      <th class="text-left p-2">種別</th>
+      <th class="text-left p-2">パス</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @visitor.events.order(occurred_at: :desc).each do |event| %>
+      <tr class="border-b">
+        <td class="p-2"><%= event.occurred_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+        <td class="p-2"><%= event.event_type %></td>
+        <td class="p-2"><%= event.path %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
