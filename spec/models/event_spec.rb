@@ -13,5 +13,11 @@ RSpec.describe Event, type: :model do
       expect(event).not_to be_valid
       expect(event.errors[:path]).to be_present
     end
+
+    it "occurred_at がない場合は無効" do
+      event = build(:event, occurred_at: nil)
+      expect(event).not_to be_valid
+      expect(event.errors[:occurred_at]).to be_present
+    end
   end
 end
