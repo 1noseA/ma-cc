@@ -34,4 +34,15 @@ RSpec.describe Visitor, type: :model do
       expect(visitor.errors[:last_visited_at]).to be_present
     end
   end
+
+  describe "#page_view_count" do
+    it "page_view イベントの件数を返す" do
+      visitor = create(:visitor)
+      create(:event, visitor: visitor, event_type: "page_view")
+      create(:event, visitor: visitor, event_type: "page_view")
+      create(:event, visitor: visitor, event_type: "form_submit")
+
+      expect(visitor.page_view_count).to eq(2)
+    end
+  end
 end
