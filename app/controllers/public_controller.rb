@@ -6,6 +6,15 @@ class PublicController < ApplicationController
 
   def track_visitor
     identify_visitor
+    record_page_view
+  end
+
+  def record_page_view
+    @current_visitor.events.create!(
+      event_type: "page_view",
+      path: request.path,
+      occurred_at: Time.current
+    )
   end
 
   def identify_visitor
