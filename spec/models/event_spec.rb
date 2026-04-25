@@ -7,5 +7,11 @@ RSpec.describe Event, type: :model do
       expect(event).not_to be_valid
       expect(event.errors[:event_type]).to be_present
     end
+
+    it "path がない場合は無効" do
+      event = build(:event, path: nil)
+      expect(event).not_to be_valid
+      expect(event.errors[:path]).to be_present
+    end
   end
 end
