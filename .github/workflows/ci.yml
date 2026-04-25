@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4.9"
+          bundler-cache: true
+
+      - name: DB prepare
+        run: bin/rails db:prepare
+        env:
+          RAILS_ENV: test
+
+      - name: RSpec
+        run: bundle exec rspec
+
+      - name: RuboCop
+        run: bundle exec rubocop
+
+      - name: Brakeman
+        run: bundle exec brakeman -q --no-pager
