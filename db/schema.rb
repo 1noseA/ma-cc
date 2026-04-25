@@ -10,13 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_20_150055) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_25_142731) do
   create_table "articles", force: :cascade do |t|
     t.text "body", null: false
     t.datetime "created_at", null: false
     t.boolean "published", default: true, null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "event_type"
+    t.datetime "occurred_at"
+    t.string "path"
+    t.datetime "updated_at", null: false
+    t.integer "visitor_id", null: false
+    t.index ["event_type"], name: "index_events_on_event_type"
+    t.index ["visitor_id", "occurred_at"], name: "index_events_on_visitor_id_and_occurred_at"
+    t.index ["visitor_id"], name: "index_events_on_visitor_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -47,5 +59,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_20_150055) do
     t.index ["visitor_token"], name: "index_visitors_on_visitor_token", unique: true
   end
 
+  add_foreign_key "events", "visitors"
   add_foreign_key "sessions", "users"
 end
