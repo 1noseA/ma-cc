@@ -1,36 +1,48 @@
 class PublicController < ApplicationController
   allow_unauthenticated_access all: true
+
+  TRACKABLE_CONTROLLERS = %w[home articles].freeze
+
   before_action :track_visitor
 
   private
 
   def track_visitor
     identify_visitor
-    record_page_view
+    touch_last_visited_at
+    record_page_view_if_trackable
+    recalculate_score_if_event_recorded
   end
 
-  def record_page_view
-    @current_visitor.events.create!(
+  def identify_visitor
+    token = cookies.permanent.signed[:visitor_token] ||= SecureRandom.uuid
+    @current_visitor = Visitor.find_or_create_by(visitor_token: token) do |v|
+      v.first_visited_at = Time.current
+      v.last_visited_at = Time.current
+    end
+  end
+
+  def touch_last_visited_at
+    @current_visitor.update(last_visited_at: Time.current)
+  end
+
+  def record_page_view_if_trackable
+    return unless trackable_request?
+
+    @recorded_event = @current_visitor.events.create!(
       event_type: "page_view",
       path: request.path,
       occurred_at: Time.current
     )
   end
 
-  def identify_visitor
-    token = cookies[:visitor_token]
-    @current_visitor = Visitor.find_by(visitor_token: token)
+  def recalculate_score_if_event_recorded
+    return unless @recorded_event
 
-    if @current_visitor
-      @current_visitor.update!(last_visited_at: Time.current)
-    else
-      token = SecureRandom.uuid
-      cookies.permanent[:visitor_token] = { value: token, httponly: true }
-      @current_visitor = Visitor.create!(
-        visitor_token: token,
-        first_visited_at: Time.current,
-        last_visited_at: Time.current
-      )
-    end
+    @current_visitor.recalculate_score!
+  end
+
+  def trackable_request?
+    TRACKABLE_CONTROLLERS.include?(controller_name)
   end
 end
