@@ -6,6 +6,7 @@ module Admin
 
     def show
       @visitor = Visitor.find(params[:id])
+      @events = @visitor.events.order(occurred_at: :desc)
     end
   end
 end
