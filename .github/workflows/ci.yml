@@ -31,20 +31,3 @@ jobs:
 
       - name: Brakeman
         run: bundle exec brakeman -q --no-pager
-
-  claude-review:
-    needs: [test]
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    permissions:
-      contents: read
-      pull-requests: write
-      issues: write
-      id-token: write
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: anthropics/claude-code-action@v1
-        with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
