@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_25_142731) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_27_000000) do
   create_table "articles", force: :cascade do |t|
     t.text "body", null: false
     t.datetime "created_at", null: false
@@ -21,9 +21,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_142731) do
 
   create_table "events", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "event_type"
-    t.datetime "occurred_at"
-    t.string "path"
+    t.string "event_type", null: false
+    t.datetime "occurred_at", null: false
+    t.string "path", null: false
     t.datetime "updated_at", null: false
     t.integer "visitor_id", null: false
     t.index ["event_type"], name: "index_events_on_event_type"

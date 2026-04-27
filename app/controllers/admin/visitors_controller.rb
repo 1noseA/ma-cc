@@ -1,5 +1,5 @@
 module Admin
-  class VisitorsController < ApplicationController
+  class VisitorsController < Admin::ApplicationController
     def index
       @visitors = Visitor.order(last_visited_at: :desc)
     end

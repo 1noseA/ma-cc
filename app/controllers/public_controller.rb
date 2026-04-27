@@ -23,6 +23,8 @@ class PublicController < ApplicationController
   end
 
   def touch_last_visited_at
+    return if @current_visitor.previously_new_record?
+
     @current_visitor.update(last_visited_at: Time.current)
   end
 
