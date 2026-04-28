@@ -853,6 +853,7 @@ class PublicController < ApplicationController
     token = cookies.permanent.signed[:visitor_token] ||= SecureRandom.uuid
     @current_visitor = Visitor.find_or_create_by(visitor_token: token) do |v|
       v.first_visited_at = Time.current
+      v.last_visited_at  = Time.current  # presence バリデーションを満たすため新規時にセット
     end
   end
 
