@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   # 公開側
   root "home#show"
   resources :articles, only: %i[index show]
+  resources :forms, only: [] do
+    member { get :thanks }
+  end
 
   # 管理側(認証必須)。中身は後続チケットで追加する。
   namespace :admin do
