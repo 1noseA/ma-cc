@@ -1,7 +1,7 @@
 module Admin
   class VisitorsController < Admin::ApplicationController
     def index
-      @visitors = Visitor.order(last_visited_at: :desc)
+      @visitors = Visitor.includes(:lead, :events).order(last_visited_at: :desc)
     end
 
     def show

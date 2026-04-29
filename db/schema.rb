@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_28_102913) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_29_050001) do
   create_table "articles", force: :cascade do |t|
     t.text "body", null: false
     t.datetime "created_at", null: false
@@ -31,12 +31,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_28_102913) do
     t.index ["visitor_id"], name: "index_events_on_visitor_id"
   end
 
+  create_table "form_submissions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.integer "form_id", null: false
+    t.string "name", null: false
+    t.datetime "submitted_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "visitor_id", null: false
+    t.index ["form_id"], name: "index_form_submissions_on_form_id"
+    t.index ["visitor_id"], name: "index_form_submissions_on_visitor_id"
+  end
+
   create_table "forms", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.text "description"
-    t.string "name", null: false
+    t.string "description"
+    t.string "name"
     t.string "success_message"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "leads", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.datetime "first_converted_at", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.integer "visitor_id", null: false
+    t.index ["visitor_id"], name: "index_leads_on_visitor_id", unique: true
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -68,5 +90,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_28_102913) do
   end
 
   add_foreign_key "events", "visitors"
+  add_foreign_key "form_submissions", "forms"
+  add_foreign_key "form_submissions", "visitors"
+  add_foreign_key "leads", "visitors"
   add_foreign_key "sessions", "users"
 end

@@ -20,6 +20,16 @@ RSpec.describe "Admin::Visitors", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(visitor.visitor_token)
     end
+
+    it "リード化済みの訪問者に「リード化済み」と表示される" do
+      visitor = create(:visitor)
+      create(:lead, visitor: visitor)
+
+      get admin_visitors_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("リード化済み")
+    end
   end
 
   describe "GET /admin/visitors/:id" do
