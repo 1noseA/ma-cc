@@ -21,4 +21,16 @@ RSpec.describe "Admin::Leads", type: :request do
       expect(response.body).to include(lead.email)
     end
   end
+
+  describe "GET /admin/leads/:id" do
+    it "リード詳細に行動履歴が表示される" do
+      lead = create(:lead)
+      create(:event, visitor: lead.visitor, path: "/articles/1", occurred_at: 1.hour.ago)
+
+      get admin_lead_path(lead)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("/articles/1")
+    end
+  end
 end
