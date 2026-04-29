@@ -3,4 +3,5 @@ class Lead < ApplicationRecord
 
   validates :email, presence: true
   validates :name, presence: true
+  validates :visitor_id, uniqueness: true
 end

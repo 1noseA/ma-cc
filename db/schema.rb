@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_29_005945) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_29_011053) do
   create_table "articles", force: :cascade do |t|
     t.text "body", null: false
     t.datetime "created_at", null: false
@@ -58,7 +58,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_005945) do
     t.string "name"
     t.datetime "updated_at", null: false
     t.integer "visitor_id", null: false
-    t.index ["visitor_id"], name: "index_leads_on_visitor_id"
+    t.index ["visitor_id"], name: "index_leads_on_visitor_id", unique: true
   end
 
   create_table "sessions", force: :cascade do |t|
