@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: 'Noto Sans JP', -apple-system, 'Hiragino Kaku Gothic ProN', sans-serif;
+  --font-serif: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}

@@ -1,10 +1,16 @@
 <% content_for :title, @article.title %>
 
-<article class="w-full">
-  <h1 class="text-3xl font-bold mb-4"><%= @article.title %></h1>
-  <div class="prose text-gray-800 whitespace-pre-line"><%= @article.body %></div>
+<div class="py-12">
+  <%= link_to articles_path, class: "inline-flex items-center gap-2 text-stone-400 hover:text-stone-700 text-sm transition-colors mb-12" do %>
+    ← 記事一覧
+  <% end %>
 
-  <div class="mt-8">
-    <%= link_to "← 記事一覧に戻る", articles_path, class: "text-blue-600 hover:underline" %>
-  </div>
-</article>
+  <article class="max-w-2xl">
+    <h1 class="font-serif text-4xl font-bold text-stone-900 leading-tight mb-10">
+      <%= @article.title %>
+    </h1>
+    <div class="text-stone-700 leading-[1.9] whitespace-pre-line text-base">
+      <%= @article.body %>
+    </div>
+  </article>
+</div>
