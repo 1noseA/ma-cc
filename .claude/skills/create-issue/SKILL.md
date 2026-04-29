@@ -58,9 +58,11 @@ GitHub Issue を `tasks.md` のチケット定義から作成するスキル。
 ### 4. タイトルを決める
 
 ```
-<チケットID>: <tasks.md の見出し名>
-例: T05: Visitor モデル + cookie 識別
+<チケットID>：<tasks.md の見出し名>
+例: T05：Visitor モデル + cookie 識別
 ```
+
+コロンは全角（`：`）、コロンの前後にスペースを入れない。
 
 ### 5. プレビューを表示する
 
@@ -68,7 +70,7 @@ GitHub Issue を `tasks.md` のチケット定義から作成するスキル。
 
 ---
 
-**タイトル:** `T05: Visitor モデル + cookie 識別`
+**タイトル:** `T05：Visitor モデル + cookie 識別`
 
 **本文:**
 ```markdown
