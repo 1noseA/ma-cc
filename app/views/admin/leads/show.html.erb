@@ -26,3 +26,23 @@
     <% end %>
   </tbody>
 </table>
+
+<h2 class="text-lg font-semibold mb-3">フォーム送信履歴</h2>
+<table class="w-full text-sm mb-10">
+  <thead>
+    <tr class="border-b">
+      <th class="text-left py-2 pr-4">メール</th>
+      <th class="text-left py-2 pr-4">氏名</th>
+      <th class="text-left py-2 pr-4">送信日時</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @lead.visitor.form_submissions.order(submitted_at: :desc).each do |submission| %>
+      <tr class="border-b hover:bg-stone-50">
+        <td class="py-2 pr-4"><%= submission.email %></td>
+        <td class="py-2 pr-4"><%= submission.name %></td>
+        <td class="py-2 pr-4"><%= submission.submitted_at&.strftime("%Y/%m/%d %H:%M") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

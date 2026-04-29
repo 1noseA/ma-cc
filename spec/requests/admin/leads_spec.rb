@@ -32,5 +32,16 @@ RSpec.describe "Admin::Leads", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("/articles/1")
     end
+
+    it "リード詳細にフォーム送信履歴が表示される" do
+      lead = create(:lead)
+      form = create(:form)
+      create(:form_submission, visitor: lead.visitor, form: form, email: "sub@example.com")
+
+      get admin_lead_path(lead)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("sub@example.com")
+    end
   end
 end
