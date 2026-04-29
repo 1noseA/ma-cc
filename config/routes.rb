@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   resources :articles, only: %i[index show]
   resources :forms, only: [] do
     member { get :thanks }
+    resources :submissions, only: %i[create], controller: "form_submissions"
   end
 
   # 管理側(認証必須)。中身は後続チケットで追加する。
