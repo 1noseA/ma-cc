@@ -3,13 +3,14 @@ class FormSubmissionsController < PublicController
     @form = Form.find(params[:form_id])
     @form.form_submissions.create!(
       visitor: @current_visitor,
-      email: params[:form_submission][:email],
-      name: params[:form_submission][:name],
+      email: submission_params[:email],
+      name: submission_params[:name],
       submitted_at: Time.current
     )
+    # ブロックは新規作成時のみ実行される。既存リードの email/name は更新しない（初回コンバージョン優先）
     Lead.find_or_create_by!(visitor: @current_visitor) do |lead|
-      lead.email = params[:form_submission][:email]
-      lead.name  = params[:form_submission][:name]
+      lead.email = submission_params[:email]
+      lead.name  = submission_params[:name]
       lead.first_converted_at = Time.current
     end
     @current_visitor.events.create!(
@@ -18,5 +19,11 @@ class FormSubmissionsController < PublicController
       occurred_at: Time.current
     )
     redirect_to thanks_form_path(@form)
+  end
+
+  private
+
+  def submission_params
+    params.require(:form_submission).permit(:email, :name)
   end
 end

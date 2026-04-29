@@ -32,5 +32,14 @@ RSpec.describe "FormSubmissions", type: :request do
            params: { form_submission: { email: "test@example.com", name: "テスト 太郎" } }
       expect(response).to redirect_to(thanks_form_path(form))
     end
+
+    it "同じ訪問者が2回送信しても Lead は1件のみ" do
+      post form_submissions_path(form),
+           params: { form_submission: { email: "first@example.com", name: "一回目" } }
+      expect {
+        post form_submissions_path(form),
+             params: { form_submission: { email: "second@example.com", name: "二回目" } }
+      }.not_to change(Lead, :count)
+    end
   end
 end

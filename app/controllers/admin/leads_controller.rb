@@ -5,7 +5,7 @@ module Admin
     end
 
     def show
-      @lead = Lead.find(params[:id])
+      @lead = Lead.includes(visitor: [:events, :form_submissions]).find(params[:id])
     end
   end
 end
