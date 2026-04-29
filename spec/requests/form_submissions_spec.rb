@@ -26,5 +26,11 @@ RSpec.describe "FormSubmissions", type: :request do
              params: { form_submission: { email: "test@example.com", name: "テスト 太郎" } }
       }.to change(Event.form_submits, :count).by(1)
     end
+
+    it "フォームを送信するとサンクスページにリダイレクトされる" do
+      post form_submissions_path(form),
+           params: { form_submission: { email: "test@example.com", name: "テスト 太郎" } }
+      expect(response).to redirect_to(thanks_form_path(form))
+    end
   end
 end

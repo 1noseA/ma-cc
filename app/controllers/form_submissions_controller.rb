@@ -17,5 +17,6 @@ class FormSubmissionsController < PublicController
       path: request.path,
       occurred_at: Time.current
     )
+    redirect_to thanks_form_path(@form)
   end
 end
