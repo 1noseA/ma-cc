@@ -19,5 +19,12 @@ RSpec.describe "FormSubmissions", type: :request do
              params: { form_submission: { email: "test@example.com", name: "テスト 太郎" } }
       }.to change(Lead, :count).by(1)
     end
+
+    it "フォームを送信すると form_submit イベントが記録される" do
+      expect {
+        post form_submissions_path(form),
+             params: { form_submission: { email: "test@example.com", name: "テスト 太郎" } }
+      }.to change(Event.form_submits, :count).by(1)
+    end
   end
 end

@@ -12,5 +12,10 @@ class FormSubmissionsController < PublicController
       lead.name  = params[:form_submission][:name]
       lead.first_converted_at = Time.current
     end
+    @current_visitor.events.create!(
+      event_type: "form_submit",
+      path: request.path,
+      occurred_at: Time.current
+    )
   end
 end
