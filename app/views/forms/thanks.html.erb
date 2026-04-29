@@ -1,0 +1,6 @@
+<% content_for :title, "送信完了" %>
+
+<section class="w-full text-center py-12">
+  <h1 class="text-3xl font-bold mb-4"><%= @form.success_message.presence || "送信ありがとうございました" %></h1>
+  <%= link_to "トップへ戻る", root_path, class: "text-blue-600 hover:underline" %>
+</section>
