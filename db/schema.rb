@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_29_011053) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_29_050001) do
   create_table "articles", force: :cascade do |t|
     t.text "body", null: false
     t.datetime "created_at", null: false
@@ -33,10 +33,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_011053) do
 
   create_table "form_submissions", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "email"
+    t.string "email", null: false
     t.integer "form_id", null: false
-    t.string "name"
-    t.datetime "submitted_at"
+    t.string "name", null: false
+    t.datetime "submitted_at", null: false
     t.datetime "updated_at", null: false
     t.integer "visitor_id", null: false
     t.index ["form_id"], name: "index_form_submissions_on_form_id"
@@ -53,9 +53,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_011053) do
 
   create_table "leads", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "email"
-    t.datetime "first_converted_at"
-    t.string "name"
+    t.string "email", null: false
+    t.datetime "first_converted_at", null: false
+    t.string "name", null: false
     t.datetime "updated_at", null: false
     t.integer "visitor_id", null: false
     t.index ["visitor_id"], name: "index_leads_on_visitor_id", unique: true

@@ -17,7 +17,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @lead.visitor.events.order(occurred_at: :desc).each do |event| %>
+    <% @lead.visitor.events.sort_by(&:occurred_at).reverse.each do |event| %>
       <tr class="border-b hover:bg-stone-50">
         <td class="py-2 pr-4"><%= event.event_type %></td>
         <td class="py-2 pr-4"><%= event.path %></td>
@@ -37,7 +37,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @lead.visitor.form_submissions.order(submitted_at: :desc).each do |submission| %>
+    <% @lead.visitor.form_submissions.sort_by { |s| s.submitted_at || Time.at(0) }.reverse.each do |submission| %>
       <tr class="border-b hover:bg-stone-50">
         <td class="py-2 pr-4"><%= submission.email %></td>
         <td class="py-2 pr-4"><%= submission.name %></td>
