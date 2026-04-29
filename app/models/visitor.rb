@@ -4,7 +4,7 @@ class Visitor < ApplicationRecord
   has_one :lead, dependent: :destroy
 
   def page_view_count
-    events.page_views.count
+    events.count { |e| e.event_type == "page_view" }
   end
 
   def recalculate_score!
