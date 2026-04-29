@@ -7,5 +7,10 @@ class FormSubmissionsController < PublicController
       name: params[:form_submission][:name],
       submitted_at: Time.current
     )
+    Lead.find_or_create_by!(visitor: @current_visitor) do |lead|
+      lead.email = params[:form_submission][:email]
+      lead.name  = params[:form_submission][:name]
+      lead.first_converted_at = Time.current
+    end
   end
 end

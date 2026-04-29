@@ -12,5 +12,12 @@ RSpec.describe "FormSubmissions", type: :request do
              params: { form_submission: { email: "test@example.com", name: "テスト 太郎" } }
       }.to change(FormSubmission, :count).by(1)
     end
+
+    it "フォームを送信すると Lead が作られる" do
+      expect {
+        post form_submissions_path(form),
+             params: { form_submission: { email: "test@example.com", name: "テスト 太郎" } }
+      }.to change(Lead, :count).by(1)
+    end
   end
 end
