@@ -32,5 +32,6 @@ RSpec.describe "FormSubmissions", type: :request do
            params: { form_submission: { email: "test@example.com", name: "テスト 太郎" } }
       expect(response).to redirect_to(thanks_form_path(form))
     end
+
   end
 end

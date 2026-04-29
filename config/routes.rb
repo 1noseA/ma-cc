@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   namespace :admin do
     root "dashboard#show"
     resources :visitors, only: %i[index show]
+    resources :leads, only: %i[index show]
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
