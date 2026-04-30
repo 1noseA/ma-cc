@@ -10,13 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_29_050001) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_30_001607) do
   create_table "articles", force: :cascade do |t|
     t.text "body", null: false
     t.datetime "created_at", null: false
     t.boolean "published", default: true, null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "display_rules", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.boolean "enabled", default: true, null: false
+    t.integer "form_id", null: false
+    t.string "rule_type"
+    t.integer "threshold"
+    t.datetime "updated_at", null: false
+    t.index ["form_id"], name: "index_display_rules_on_form_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -89,6 +99,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_050001) do
     t.index ["visitor_token"], name: "index_visitors_on_visitor_token", unique: true
   end
 
+  add_foreign_key "display_rules", "forms"
   add_foreign_key "events", "visitors"
   add_foreign_key "form_submissions", "forms"
   add_foreign_key "form_submissions", "visitors"
