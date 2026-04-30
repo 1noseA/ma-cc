@@ -23,7 +23,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_30_001607) do
     t.datetime "created_at", null: false
     t.boolean "enabled", default: true, null: false
     t.integer "form_id", null: false
-    t.string "rule_type"
+    t.string "rule_type", null: false
     t.integer "threshold"
     t.datetime "updated_at", null: false
     t.index ["form_id"], name: "index_display_rules_on_form_id"

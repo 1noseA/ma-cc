@@ -46,6 +46,8 @@ class PublicController < ApplicationController
   end
 
   def set_current_form
+    return unless trackable_request?
+
     @current_form = Form.includes(:display_rules).find { |f| f.should_display_for?(@current_visitor) }
   end
 

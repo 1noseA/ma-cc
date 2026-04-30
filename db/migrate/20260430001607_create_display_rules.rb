@@ -2,7 +2,7 @@ class CreateDisplayRules < ActiveRecord::Migration[8.1]
   def change
     create_table :display_rules do |t|
       t.references :form, null: false, foreign_key: true
-      t.string :rule_type
+      t.string :rule_type, null: false
       t.integer :threshold
       t.boolean :enabled, null: false, default: true
 

@@ -1,6 +1,11 @@
 class DisplayRule < ApplicationRecord
   belongs_to :form
 
+  validates :rule_type, presence: true
+  validates :threshold, presence: true,
+                        numericality: { only_integer: true, greater_than_or_equal_to: 0 },
+                        if: -> { rule_type == "visit_count_gte" }
+
   def matches?(visitor)
     return false unless enabled
 
