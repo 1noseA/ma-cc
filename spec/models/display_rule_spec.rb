@@ -5,6 +5,15 @@ RSpec.describe DisplayRule, type: :model do
     let(:form) { create(:form) }
     let(:display_rule) { build(:display_rule, form: form, rule_type: "visit_count_gte", threshold: 3, enabled: true) }
 
+    context "enabled=false のとき" do
+      it "page_view が threshold 以上でも false を返す" do
+        disabled_rule = build(:display_rule, form: form, rule_type: "visit_count_gte", threshold: 3, enabled: false)
+        visitor = create(:visitor)
+        create_list(:event, 3, visitor: visitor, event_type: "page_view")
+        expect(disabled_rule.matches?(visitor)).to be false
+      end
+    end
+
     context "visit_count_gte ルール" do
       it "page_view が threshold 未満の訪問者に対して false を返す" do
         visitor = create(:visitor)
