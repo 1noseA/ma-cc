@@ -12,6 +12,7 @@ class PublicController < ApplicationController
     touch_last_visited_at
     record_page_view_if_trackable
     recalculate_score_if_event_recorded
+    set_current_form
   end
 
   def identify_visitor
@@ -42,6 +43,10 @@ class PublicController < ApplicationController
     return unless @recorded_event
 
     @current_visitor.recalculate_score!
+  end
+
+  def set_current_form
+    @current_form = Form.includes(:display_rules).find { |f| f.should_display_for?(@current_visitor) }
   end
 
   def trackable_request?
