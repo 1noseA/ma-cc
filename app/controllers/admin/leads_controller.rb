@@ -1,7 +1,7 @@
 module Admin
   class LeadsController < Admin::ApplicationController
     def index
-      @leads = Lead.order(created_at: :desc)
+      @leads = Lead.joins(:visitor).order("visitors.score DESC")
     end
 
     def show
