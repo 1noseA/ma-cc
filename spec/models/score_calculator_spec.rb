@@ -24,5 +24,11 @@ RSpec.describe ScoreCalculator do
     it "イベントがない場合は0" do
       expect(ScoreCalculator.new(visitor).call).to eq(0)
     end
+
+    it "PATH_BONUS が定義されたパスを訪問すると加点される" do
+      stub_const("ScoreCalculator::PATH_BONUS", { "/special" => 5 }.freeze)
+      create(:event, visitor: visitor, event_type: "page_view", path: "/special")
+      expect(ScoreCalculator.new(visitor).call).to eq(6)
+    end
   end
 end

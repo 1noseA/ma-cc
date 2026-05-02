@@ -18,6 +18,7 @@ class FormSubmissionsController < PublicController
       path: request.path,
       occurred_at: Time.current
     )
+    @current_visitor.recalculate_score!
     redirect_to thanks_form_path(@form)
   end
 
