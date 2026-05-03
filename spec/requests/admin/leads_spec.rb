@@ -20,6 +20,17 @@ RSpec.describe "Admin::Leads", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(lead.email)
     end
+
+    it "スコアが高いリードが先に表示される" do
+      high_visitor = create(:visitor, score: 5)
+      low_visitor  = create(:visitor, score: 1)
+      create(:lead, visitor: high_visitor, email: "high@example.com")
+      create(:lead, visitor: low_visitor,  email: "low@example.com")
+
+      get admin_leads_path
+
+      expect(response.body.index("high@example.com")).to be < response.body.index("low@example.com")
+    end
   end
 
   describe "GET /admin/leads/:id" do

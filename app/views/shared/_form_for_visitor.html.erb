@@ -22,7 +22,7 @@
     <p class="text-stone-500 text-sm mb-6">資料請求やご質問はこちらからお気軽にどうぞ。</p>
 
     <%# ── フォーム ── %>
-    <%= form_with scope: :form_submission, url: "#", method: :post, class: "space-y-4" do |f| %>
+    <%= form_with scope: :form_submission, url: form_submissions_path(@current_form), method: :post, class: "space-y-4" do |f| %>
       <div>
         <%= f.label :name, "お名前", class: "block text-sm font-medium text-stone-700 mb-1.5" %>
         <%= f.text_field :name,

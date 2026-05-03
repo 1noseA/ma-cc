@@ -16,4 +16,11 @@ end
   end
 end
 
+# お問い合わせフォーム + 表示ルール(T09/T10)
+form = Form.find_or_create_by!(name: "お問い合わせ")
+DisplayRule.find_or_create_by!(form: form, rule_type: "visit_count_gte") do |r|
+  r.threshold = 3
+  r.enabled   = true
+end
+
 puts "Seed completed."

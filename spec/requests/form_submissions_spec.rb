@@ -41,5 +41,11 @@ RSpec.describe "FormSubmissions", type: :request do
              params: { form_submission: { email: "second@example.com", name: "二回目" } }
       }.not_to change(Lead, :count)
     end
+
+    it "フォームを送信すると visitor のスコアが再計算される" do
+      post form_submissions_path(form),
+           params: { form_submission: { email: "test@example.com", name: "テスト 太郎" } }
+      expect(Visitor.last.reload.score).to eq(4)
+    end
   end
 end
