@@ -87,46 +87,6 @@ User task → Is it static HTML?
             4. Execute actions with discovered selectors
 ```
 
-### Turbo フォームの送信
-
-このプロジェクトは Turbo (Rails 8 デフォルト) を使っており、フォーム送信が非同期になる。
-`page.click("input[type='submit']")` や `press("Enter")` は Turbo フォームを送信できないことがある。
-
-**正しいパターン**:
-
-```python
-# Turbo フォームの送信は expect_navigation + requestSubmit() を使う
-with page.expect_navigation():
-    page.evaluate("document.querySelector('form').requestSubmit()")
-page.wait_for_load_state("networkidle")
-```
-
-ダイアログ内のフォームを送信する場合は `dialog[open] form` を使う:
-
-```python
-with page.expect_navigation():
-    page.evaluate("document.querySelector('dialog[open] form').requestSubmit()")
-```
-
----
-
-## Decision Tree: Choosing Your Approach
-
-```
-User task → Is it static HTML?
-    ├─ Yes → Read HTML file directly to identify selectors
-    │         ├─ Success → Write Playwright script using selectors
-    │         └─ Fails/Incomplete → Treat as dynamic (below)
-    │
-    └─ No (dynamic webapp) → Is the server already running?
-        ├─ No → Use with_server.py (上記パスを参照)
-        └─ Yes → Reconnaissance-then-action:
-            1. Navigate and wait for networkidle
-            2. Take screenshot or inspect DOM
-            3. Identify selectors from rendered state
-            4. Execute actions with discovered selectors
-```
-
 ## Best Practices
 
 - Use `sync_playwright()` for synchronous scripts
@@ -134,4 +94,3 @@ User task → Is it static HTML?
 - Use descriptive selectors: `text=`, `role=`, CSS selectors, or IDs
 - Add appropriate waits: `page.wait_for_selector()` or `page.wait_for_timeout()`
 - `dialog[open]` で開いているモーダルの存在を確認する（`dialog` だけでは DOM にあるだけで非表示の場合がある）
-- Turbo フォームの送信には `expect_navigation + requestSubmit()` を使う（上記参照）
