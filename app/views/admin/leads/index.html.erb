@@ -7,6 +7,7 @@
     <tr class="border-b">
       <th class="text-left py-2 pr-4">氏名</th>
       <th class="text-left py-2 pr-4">メール</th>
+      <th class="text-left py-2 pr-4">スコア</th>
       <th class="text-left py-2 pr-4">リード化日時</th>
     </tr>
   </thead>
@@ -15,6 +16,7 @@
       <tr class="border-b hover:bg-stone-50">
         <td class="py-2 pr-4"><%= link_to lead.name, admin_lead_path(lead), class: "text-teal-700 hover:underline" %></td>
         <td class="py-2 pr-4"><%= lead.email %></td>
+        <td class="py-2 pr-4 font-mono"><%= lead.visitor.score %></td>
         <td class="py-2 pr-4"><%= lead.first_converted_at&.strftime("%Y/%m/%d %H:%M") %></td>
       </tr>
     <% end %>
