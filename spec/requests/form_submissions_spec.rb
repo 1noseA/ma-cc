@@ -45,7 +45,8 @@ RSpec.describe "FormSubmissions", type: :request do
     it "フォームを送信すると visitor のスコアが再計算される" do
       post form_submissions_path(form),
            params: { form_submission: { email: "test@example.com", name: "テスト 太郎" } }
-      expect(Visitor.last.reload.score).to eq(4)
+      visitor = Visitor.find_by(visitor_token: cookies.signed[:visitor_token])
+      expect(visitor.reload.score).to eq(4)
     end
   end
 end
