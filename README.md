@@ -1,7 +1,7 @@
 # Leadpulse
 
 マーケティングオートメーション（MA）ツール
-.github/images/01_home.png
+![ホーム](.github/images/01_home.png)
 
 ## 目的
 
