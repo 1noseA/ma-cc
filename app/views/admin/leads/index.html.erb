@@ -1,24 +1,40 @@
 <% content_for :title, "リード一覧" %>
 
-<h1 class="text-2xl font-bold mb-6">リード一覧</h1>
+<div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+  <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+    <h2 class="text-sm font-semibold text-slate-900">リード一覧</h2>
+    <span class="text-xs text-slate-400"><%= @leads.count %> 件 · スコア降順</span>
+  </div>
 
-<table class="w-full text-sm">
-  <thead>
-    <tr class="border-b">
-      <th class="text-left py-2 pr-4">氏名</th>
-      <th class="text-left py-2 pr-4">メール</th>
-      <th class="text-left py-2 pr-4">スコア</th>
-      <th class="text-left py-2 pr-4">リード化日時</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @leads.each do |lead| %>
-      <tr class="border-b hover:bg-stone-50">
-        <td class="py-2 pr-4"><%= link_to lead.name, admin_lead_path(lead), class: "text-teal-700 hover:underline" %></td>
-        <td class="py-2 pr-4"><%= lead.email %></td>
-        <td class="py-2 pr-4 font-mono"><%= lead.visitor.score %></td>
-        <td class="py-2 pr-4"><%= lead.first_converted_at&.strftime("%Y/%m/%d %H:%M") %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <% if @leads.any? %>
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-slate-100 bg-slate-50">
+          <th class="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">氏名</th>
+          <th class="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">メール</th>
+          <th class="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">スコア</th>
+          <th class="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">リード化日時</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        <% @leads.each do |lead| %>
+          <tr class="hover:bg-slate-50 transition-colors duration-100">
+            <td class="px-6 py-3">
+              <%= link_to lead.name, admin_lead_path(lead),
+                    class: "font-medium text-sky-700 hover:text-sky-900 transition-colors duration-150" %>
+            </td>
+            <td class="px-6 py-3 text-slate-600"><%= lead.email %></td>
+            <td class="px-6 py-3">
+              <span class="inline-flex items-center justify-center w-9 h-6 rounded-md bg-sky-50 text-sky-700 text-xs font-bold font-mono border border-sky-200">
+                <%= lead.visitor.score %>
+              </span>
+            </td>
+            <td class="px-6 py-3 text-slate-400 text-xs"><%= lead.first_converted_at&.strftime("%Y/%m/%d %H:%M") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="px-6 py-12 text-center text-slate-400 text-sm">リードはまだありません。</div>
+  <% end %>
+</div>

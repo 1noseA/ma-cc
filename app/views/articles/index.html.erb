@@ -1,28 +1,38 @@
 <% content_for :title, "記事一覧" %>
 
 <section class="py-12">
-  <div class="flex items-baseline gap-4 mb-12">
-    <h1 class="font-serif text-4xl font-bold text-stone-900">記事一覧</h1>
-    <span class="text-stone-400 text-sm"><%= @articles.count %> 本</span>
+  <div class="mb-10">
+    <h1 class="text-3xl font-bold text-slate-900 tracking-tight">記事一覧</h1>
+    <p class="text-slate-500 text-sm mt-1"><%= @articles.count %> 本の記事</p>
   </div>
 
   <% if @articles.any? %>
-    <ul class="divide-y divide-stone-200">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       <% @articles.each_with_index do |article, i| %>
-        <li>
-          <%= link_to article_path(article), class: "flex items-center gap-6 py-5 group -mx-2 px-2 hover:bg-stone-100/60 transition-colors rounded" do %>
-            <span class="text-xs text-stone-300 font-mono w-6 shrink-0 select-none">
-              <%= (i + 1).to_s.rjust(2, "0") %>
-            </span>
-            <span class="text-stone-800 group-hover:text-teal-700 font-medium transition-colors flex-1">
-              <%= article.title %>
-            </span>
-            <span class="text-stone-300 group-hover:text-teal-500 transition-colors text-sm">→</span>
-          <% end %>
-        </li>
+        <%= link_to article_path(article),
+              class: "group bg-white rounded-xl border border-slate-200 p-6 hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col cursor-pointer" do %>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono text-slate-400">#<%= (i + 1).to_s.rjust(2, "0") %></span>
+            <span class="text-xs text-slate-400"><%= article.created_at.strftime("%Y/%m/%d") %></span>
+          </div>
+          <h2 class="text-base font-semibold text-slate-900 leading-snug mb-3 group-hover:text-sky-700 transition-colors duration-150">
+            <%= article.title %>
+          </h2>
+          <p class="text-sm text-slate-500 leading-relaxed flex-1 line-clamp-3">
+            <%= article.body.truncate(100) %>
+          </p>
+          <div class="mt-4 flex items-center gap-1.5 text-sky-600 text-sm font-medium">
+            <span>読む</span>
+            <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-150" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+            </svg>
+          </div>
+        <% end %>
       <% end %>
-    </ul>
+    </div>
   <% else %>
-    <p class="text-stone-400 text-sm">記事はまだありません。</p>
+    <div class="bg-white rounded-xl border border-slate-200 p-12 text-center">
+      <p class="text-slate-400 text-sm">記事はまだありません。</p>
+    </div>
   <% end %>
 </section>

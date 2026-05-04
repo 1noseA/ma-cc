@@ -1,10 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Noto Sans JP', -apple-system, 'Hiragino Kaku Gothic ProN', sans-serif;
-  --font-serif: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, 'Hiragino Kaku Gothic ProN', sans-serif;
+  --font-serif: 'Newsreader', Georgia, 'Hiragino Mincho ProN', serif;
 }
 
 body {
   -webkit-font-smoothing: antialiased;
 }
+
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 { font-size: 1.4rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; }
+.article-body h3 { font-size: 1.15rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; }

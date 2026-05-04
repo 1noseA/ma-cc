@@ -1,18 +1,52 @@
 <% content_for :title, @article.title %>
+<% reading_time = [(@article.body.length / 400.0).ceil, 1].max %>
 
-<div class="py-12">
-  <%= link_to articles_path, class: "inline-flex items-center gap-2 text-stone-400 hover:text-stone-700 text-sm transition-colors mb-12" do %>
-    ← 記事一覧
+<div class="py-10 lg:py-14">
+  <%# ── Back link ── %>
+  <%= link_to articles_path,
+        class: "inline-flex items-center gap-1.5 text-slate-400 hover:text-slate-700 text-sm font-medium transition-colors duration-150 mb-10" do %>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+    </svg>
+    記事一覧
   <% end %>
 
-  <article class="max-w-2xl">
-    <h1 class="font-serif text-4xl font-bold text-stone-900 leading-tight mb-10">
+  <%# ── Article layout ── %>
+  <div class="max-w-2xl">
+    <%# Article meta %>
+    <div class="flex items-center gap-3 mb-6">
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-50 text-sky-700 border border-sky-200">
+        Article
+      </span>
+      <span class="text-slate-400 text-sm"><%= @article.created_at.strftime("%Y年%-m月%-d日") %></span>
+      <span class="text-slate-300">·</span>
+      <span class="text-slate-400 text-sm">約 <%= reading_time %> 分</span>
+    </div>
+
+    <%# Title %>
+    <h1 class="font-serif text-4xl lg:text-5xl font-bold text-slate-900 leading-[1.2] tracking-tight mb-8">
       <%= @article.title %>
     </h1>
-    <div class="text-stone-700 leading-[1.9] whitespace-pre-line text-base">
+
+    <%# Divider %>
+    <div class="border-t border-slate-200 mb-8"></div>
+
+    <%# Body %>
+    <div class="article-body text-slate-700 text-lg leading-[1.85] whitespace-pre-line">
       <%= @article.body %>
     </div>
-  </article>
+  </div>
+
+  <%# ── Bottom nav ── %>
+  <div class="max-w-2xl mt-16 pt-8 border-t border-slate-200">
+    <%= link_to articles_path,
+          class: "inline-flex items-center gap-1.5 text-slate-500 hover:text-sky-700 text-sm font-medium transition-colors duration-150" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      記事一覧に戻る
+    <% end %>
+  </div>
 </div>
 
 <%= render "shared/form_for_visitor" if @current_form %>
