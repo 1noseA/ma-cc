@@ -4,19 +4,27 @@
 <div class="py-10 lg:py-14">
   <%# ── Back link ── %>
   <%= link_to articles_path,
-        class: "inline-flex items-center gap-1.5 text-slate-400 hover:text-slate-700 text-sm font-medium transition-colors duration-150 mb-10" do %>
+        class: "inline-flex items-center gap-1.5 text-slate-400 hover:text-slate-700 text-sm font-medium transition-colors duration-150 mb-8" do %>
     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
       <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
     </svg>
     記事一覧
   <% end %>
 
+  <%# ── Hero image ── %>
+  <div class="rounded-2xl overflow-hidden mb-10 bg-slate-100" style="height: 360px;">
+    <img
+      src="https://picsum.photos/seed/lp-article-<%= @article.id %>/1200/720"
+      alt=""
+      class="w-full h-full object-cover">
+  </div>
+
   <%# ── Article layout ── %>
   <div class="max-w-2xl">
-    <%# Article meta %>
-    <div class="flex items-center gap-3 mb-6">
+    <%# Meta %>
+    <div class="flex items-center gap-3 mb-5">
       <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-50 text-sky-700 border border-sky-200">
-        Article
+        マーケティング
       </span>
       <span class="text-slate-400 text-sm"><%= @article.created_at.strftime("%Y年%-m月%-d日") %></span>
       <span class="text-slate-300">·</span>
@@ -28,12 +36,22 @@
       <%= @article.title %>
     </h1>
 
-    <%# Divider %>
     <div class="border-t border-slate-200 mb-8"></div>
 
-    <%# Body %>
-    <div class="article-body text-slate-700 text-lg leading-[1.85] whitespace-pre-line">
-      <%= @article.body %>
+    <%# Body — paragraphs split by blank lines %>
+    <div class="text-slate-700 text-lg leading-[1.85] space-y-5">
+      <% @article.body.split(/\n{2,}/).each do |paragraph| %>
+        <% lines = paragraph.strip.lines.map(&:strip).reject(&:empty?) %>
+        <% next if lines.empty? %>
+        <% if lines.one? && lines.first.match?(/\A[\d１-９一二三四五].{0,30}[。\n]?\z/) || lines.first.length < 30 && !lines.first.end_with?("。") %>
+          <h2 class="font-bold text-slate-900 text-xl mt-8 mb-2"><%= lines.first %></h2>
+          <% lines.drop(1).each do |line| %>
+            <p><%= line %></p>
+          <% end %>
+        <% else %>
+          <p><%= paragraph.strip.gsub(/\n/, '') %></p>
+        <% end %>
+      <% end %>
     </div>
   </div>
 
