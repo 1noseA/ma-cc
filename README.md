@@ -1,6 +1,7 @@
 # Leadpulse
 
 マーケティングオートメーション（MA）ツール
+.github/images/01_home.png
 
 ## 目的
 
@@ -15,15 +16,15 @@
 
 **公開サイト** — Cookie で匿名訪問者を識別し、ページ閲覧をスコアとして蓄積。閾値を超えると問い合わせフォームがモーダルで表示されます。
 
-| 公開 LP | 記事一覧 | フォームモーダル（スクロール後に表示） |
+| 記事一覧 | フォームモーダル（スクロール後に表示） |
 |---|---|---|
-| ![ホーム](.github/images/01_home.png) | ![記事一覧](.github/images/02_articles.png) | ![フォーム](.github/images/03_article_with_form.png) |
+| ![記事一覧](.github/images/02_articles.png) | ![フォーム](.github/images/03_article_with_form.png) |
 
 **管理画面** — フォーム送信でリード化。ダッシュボードでコンバージョン率を確認でき、リード一覧はスコア降順で管理できます。
 
 | ダッシュボード | リード一覧（スコア降順） |
 |---|---|
-| ![ダッシュボード](.github/images/05_admin_dashboard.png) | ![リード一覧](.github/images/04_admin_leads.png) |
+| ![ダッシュボード](.github/images/04_admin_dashboard.png) | ![リード一覧](.github/images/05_admin_leads.png) |
 
 ## 技術スタック
 
