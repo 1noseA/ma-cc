@@ -52,14 +52,11 @@
       </div>
     </div>
 
-    <% if Rails.env.development? %>
-      <div class="mt-4 border border-dashed border-slate-300 rounded-lg p-4">
-        <p class="text-xs text-slate-400 text-center mb-3">開発環境のみ</p>
-        <%= link_to "/dev/login",
-              class: "block w-full text-center bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium py-2.5 rounded-lg transition-colors duration-150 cursor-pointer" do %>
-          テストログイン
-        <% end %>
-      </div>
-    <% end %>
+    <div class="mt-4 border border-dashed border-slate-300 rounded-lg p-4">
+      <%= link_to "/dev/login",
+            class: "block w-full text-center bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium py-2.5 rounded-lg transition-colors duration-150 cursor-pointer" do %>
+        テストログイン
+      <% end %>
+    </div>
   </div>
 </div>
