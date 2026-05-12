@@ -1,6 +1,9 @@
 # Leadpulse
 
 マーケティングオートメーション（MA）ツール
+
+🔗 https://ma-cc.onrender.com/
+
 ![ホーム](.github/images/01_home.png)
 
 ## 目的
@@ -32,7 +35,8 @@
 |---|---|
 | バックエンド | Ruby 3.4.9 / Rails 8.1.3 |
 | フロントエンド | Tailwind CSS v4 / Hotwire（Turbo + Stimulus） |
-| データベース | SQLite3 |
+| データベース | PostgreSQL（本番） / SQLite3（開発・テスト） |
+| デプロイ | Render |
 | 認証 | Rails 8 標準認証 |
 | テスト | RSpec / FactoryBot / Capybara（71 examples） |
 
@@ -45,8 +49,8 @@ bin/dev
 ```
 
 `http://localhost:3000` で公開ページが表示されます。
-
-**管理画面**：`http://localhost:3000/session/new` からログイン（「テストログイン」ボタンでワンクリック可）
+session/new
+**管理画面**：`http://localhost:3000/` からログイン（「テストログイン」ボタンでワンクリック可）
 
 | メールアドレス | パスワード |
 |---|---|
