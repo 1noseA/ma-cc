@@ -17,8 +17,7 @@ Rails.application.routes.draw do
     resources :leads, only: %i[index show]
   end
 
-  # 開発環境限定: テストログイン
-  get "/dev/login", to: "dev/sessions#create"
+  get "/demo/login", to: "demo_sessions#create"
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
