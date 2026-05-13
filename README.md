@@ -9,7 +9,7 @@
 ## 目的
 
 - MAツールに興味を持ち、実際に簡易的に作ってみることで仕組みを理解したい。
-- Claude CodeのSkills、GitHub Actions、AIによるレビューなどを試し、開発をフローを効率化したい。
+- Claude CodeのSkills、GitHub Actions、AIによるレビューなどを試し、開発フローを効率化したい。
 
 ## 機能
 
